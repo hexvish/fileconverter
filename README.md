@@ -1,8 +1,10 @@
 # FileConverter
 
-FileConverter is a powerful, desktop-integrated file conversion utility for Linux. It supports batch conversion of images, videos, audio, and PDF compression, with a modern GUI and seamless system integration.
+FileConverter is a powerful, desktop-integrated file conversion utility.
+It currently targets Linux, with Windows support planned.
 
-![FileConverter GUI](test_gui.png)
+
+![FileConverter GUI]
 
 ## Features
 
@@ -29,7 +31,7 @@ FileConverter is a powerful, desktop-integrated file conversion utility for Linu
 1.  **Clone and Setup**:
     ```bash
     git clone <repo-url>
-    cd fileconvertor
+    cd fileconverter
     python3 -m venv .venv
     source .venv/bin/activate
     pip install -r requirements.txt
