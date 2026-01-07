@@ -12,6 +12,7 @@ from src.core.file_detector import FileDetector, FileType
 from src.core.preset_manager import PresetManager
 from src.core.image_engine import ImageEngine
 from src.core.video_engine import VideoEngine
+from src.core.audio_engine import AudioEngine
 from src.core.pdf_engine import PdfEngine
 
 def get_output_path(input_path, preset_data):
@@ -113,6 +114,12 @@ def main():
             def progress_cb(p):
                 print(f"  Progress: {p}%", end='\r', flush=True)
             success = VideoEngine.convert(file_path, output_path, preset_data, process_holder, progress_cb)
+            print() # Newline after progress
+        elif file_type == FileType.AUDIO:
+             # Basic progress callback
+            def progress_cb(p):
+                print(f"  Progress: {p}%", end='\r', flush=True)
+            success = AudioEngine.convert(file_path, output_path, preset_data, process_holder, progress_cb)
             print() # Newline after progress
         elif file_type == FileType.PDF:
             if preset_data.get("action") == "compress":

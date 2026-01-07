@@ -3,6 +3,7 @@ import os
 from src.core.file_detector import FileType, FileDetector
 from src.core.image_engine import ImageEngine
 from src.core.video_engine import VideoEngine
+from src.core.audio_engine import AudioEngine
 from src.core.pdf_engine import PdfEngine
 from src.core.preset_manager import PresetManager
 
@@ -73,11 +74,24 @@ class ConversionWorker(QThread):
                 if not success:
                     error_msg = "ImageMagick failed"
             elif file_type == FileType.VIDEO:
-                # Callback to update progress for this file
+                # Video conversion or extraction
+                # If target format is audio (mp3, wav), we use AudioEngine logic? 
+                # Actually FFmpeg (VideoEngine) can handle it, but using AudioEngine might be cleaner/more specialized?
+                # VideoEngine uses 'ffmpeg -i ...' which works for extraction too.
+                # But let's check: VideoEngine is wired to use 'video' presets mostly.
+                # If we use VideoEngine for extraction, it should work fine if preset format is mp3.
+                
+                # However, we must also support FileType.AUDIO inputs now.
+                
                 progress_cb = lambda p: self.progress_signal.emit(input_path, p)
                 success = VideoEngine.convert(input_path, output_path, preset_data, self.current_process_holder, progress_cb)
                 if not success:
                     error_msg = "FFmpeg failed"
+            elif file_type == FileType.AUDIO:
+                progress_cb = lambda p: self.progress_signal.emit(input_path, p)
+                success = AudioEngine.convert(input_path, output_path, preset_data, self.current_process_holder, progress_cb)
+                if not success:
+                    error_msg = "FFmpeg Audio failed"
             elif file_type == FileType.PDF:
                 if preset_data.get("action") == "compress":
                     success = PdfEngine.compress(input_path, output_path, preset_data, self.current_process_holder)

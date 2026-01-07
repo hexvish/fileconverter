@@ -49,6 +49,32 @@
         "To AVI": {
             "action": "convert",
             "format": "avi"
+        },
+        "Extract Audio (MP3)": {
+            "action": "convert",
+            "format": "mp3"
+        },
+        "Extract Audio (WAV)": {
+            "action": "convert",
+            "format": "wav"
+        }
+    },
+    "AUDIO": {
+        "To MP3": {
+            "action": "convert",
+            "format": "mp3"
+        },
+        "To WAV": {
+            "action": "convert",
+            "format": "wav"
+        },
+        "To OGG": {
+            "action": "convert",
+            "format": "ogg"
+        },
+        "To FLAC": {
+            "action": "convert",
+            "format": "flac"
         }
     },
     "PDF": {

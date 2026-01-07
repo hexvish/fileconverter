@@ -1,26 +1,20 @@
 import subprocess
 import os
 
-class VideoEngine:
+class AudioEngine:
     @staticmethod
     def convert(input_path: str, output_path: str, preset: dict, p_holder: list = None, progress_cb=None) -> bool:
         """
-        Executes FFmpeg command based on preset.
+        Executes FFmpeg command for audio conversion.
         p_holder: Optional list acting as a mutable pointer to store the Popen object.
         progress_cb: Optional callback(int) for progress percentage.
         """
         cmd = ["ffmpeg", "-y", "-i", input_path] 
-
-        # We need to see progress info, so removed "-loglevel error"
-        # But we still want to hide banner
         cmd.extend(["-hide_banner"])
 
         action = preset.get("action")
-        
-        if action == "resize":
-            height = preset.get("height")
-            if height:
-                cmd.extend(["-vf", f"scale=-2:{height}"])
+        # Audio specific preset options could go here (bitrate, etc.)
+        # For now, we rely on the output extension or codec logic if needed.
         
         cmd.append(output_path)
         
@@ -37,7 +31,7 @@ class VideoEngine:
 
             total_duration = None
             
-            # Read stderr line by line
+            # Read stderr line by line for progress
             while True:
                 line = process.stderr.readline()
                 if not line:
@@ -59,8 +53,6 @@ class VideoEngine:
                 # Parse time=00:00:00.00
                 if "time=" in line and total_duration:
                     try:
-                        # Example: frame=... time=00:00:10.50 bitrate=...
-                        # Find 'time='
                         parts = line.split()
                         for p in parts:
                             if p.startswith("time="):
@@ -77,11 +69,11 @@ class VideoEngine:
             process.wait()
             
             if process.returncode != 0:
-                # End of stream 
+                print(f"FFmpeg Audio Error: Return code {process.returncode}")
                 return False
                 
             return True
 
         except Exception as e:
-            print(f"Exception during video conversion: {e}")
+            print(f"Exception during audio conversion: {e}")
             return False
