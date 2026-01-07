@@ -118,6 +118,9 @@ class MainWindow(QMainWindow):
         for item in items_to_process:
             file_path = item.data(Qt.UserRole)
             preset_name = item.data(Qt.UserRole + 2)
-            self.progress_window.add_file(os.path.basename(file_path), preset_name, file_path)
+            if file_path:
+                self.progress_window.add_file(os.path.basename(file_path), preset_name, file_path)
+            else:
+                print("Error: Item missing file path")
 
         self.progress_window.show_window()

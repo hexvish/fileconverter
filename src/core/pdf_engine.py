@@ -26,6 +26,11 @@ class PdfEngine:
         ]
         
         try:
+            # Check if output directory exists, create if not
+            out_dir = os.path.dirname(output_path)
+            if out_dir and not os.path.exists(out_dir):
+                os.makedirs(out_dir)
+
             process = subprocess.Popen(cmd, stderr=subprocess.PIPE, text=True)
 
             if process_holder is not None:

@@ -2,6 +2,7 @@ from PySide6.QtWidgets import (QWidget, QVBoxLayout, QTableWidget,
                                QTableWidgetItem, QPushButton, QHeaderView, 
                                QProgressBar, QLabel, QHBoxLayout)
 from PySide6.QtCore import Qt
+import os
 
 from src.core.worker import ConversionWorker
 
@@ -43,6 +44,10 @@ class ProgressWindow(QWidget):
         self.file_row_map = {} # Maps filename to row index
 
     def add_file(self, filename: str, preset_name: str, full_path: str = None):
+        if not full_path and os.path.isfile(filename):
+             full_path = filename
+             filename = os.path.basename(filename)
+
         row = self.table.rowCount()
         self.table.insertRow(row)
         
@@ -60,6 +65,9 @@ class ProgressWindow(QWidget):
         if full_path:
             self.jobs.append({'path': full_path, 'preset_name': preset_name})
             self.file_row_map[full_path] = row
+        else:
+            # Error state if no valid path
+            self.table.setItem(row, 3, QTableWidgetItem("Error: path missing"))
 
     def show_window(self):
         self.show()

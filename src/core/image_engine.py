@@ -25,8 +25,9 @@ class ImageEngine:
         
         try:
             # Check if output directory exists, create if not
+            # Check if output directory exists, create if not
             out_dir = os.path.dirname(output_path)
-            if not os.path.exists(out_dir):
+            if out_dir and not os.path.exists(out_dir):
                 os.makedirs(out_dir)
 
             # Run command with Popen
