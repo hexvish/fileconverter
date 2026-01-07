@@ -1,0 +1,68 @@
+{
+    "IMAGE": {
+        "Web (800px)": {
+            "action": "resize",
+            "width": 800
+        },
+        "Email (Small)": {
+            "action": "resize",
+            "width": 600
+        },
+        "To JPG": {
+            "action": "convert",
+            "format": "jpg"
+        },
+        "To PNG": {
+            "action": "convert",
+            "format": "png"
+        },
+        "To WEBP": {
+            "action": "convert",
+            "format": "webp"
+        },
+        "To PDF": {
+            "action": "convert",
+            "format": "pdf"
+        }
+    },
+    "VIDEO": {
+        "1080p": {
+            "action": "resize",
+            "height": 1080
+        },
+        "720p": {
+            "action": "resize",
+            "height": 720
+        },
+        "480p": {
+            "action": "resize",
+            "height": 480
+        },
+        "To MP4": {
+            "action": "convert",
+            "format": "mp4"
+        },
+        "To WEBM": {
+            "action": "convert",
+            "format": "webm"
+        },
+        "To AVI": {
+            "action": "convert",
+            "format": "avi"
+        }
+    },
+    "PDF": {
+        "To PDF": {
+            "action": "convert",
+            "format": "pdf"
+        },
+        "Compress (Screen/Web)": {
+            "action": "compress",
+            "quality": "screen"
+        },
+        "Compress (Ebook/Medium)": {
+            "action": "compress",
+            "quality": "ebook"
+        }
+    }
+}

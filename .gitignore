@@ -1,0 +1,22 @@
+# Python
+__pycache__/
+*.pyc
+
+# Qt
+*.qmlc
+*.pro.user
+
+# Builds
+dist/
+build/
+*.exe
+*.deb
+*.AppImage
+
+# Virtual env
+.venv/
+env/
+
+# OS
+.DS_Store
+Thumbs.db

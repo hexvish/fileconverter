@@ -1,0 +1,8 @@
+Windows Registry Editor Version 5.00
+
+[HKEY_CURRENT_USER\Software\Classes\*\shell\FileConverter]
+@="Convert with FileConverter"
+"Icon"="C:\\Path\\To\\icon.ico"
+
+[HKEY_CURRENT_USER\Software\Classes\*\shell\FileConverter\command]
+@="\"C:\\Path\\To\\python.exe\" \"C:\\Path\\To\\src\\main.py\" \"%1\""
