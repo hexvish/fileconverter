@@ -1,22 +1,29 @@
 # Python
 __pycache__/
-*.pyc
+*.py[cod]
+*$py.class
 
-# Qt
-*.qmlc
-*.pro.user
-
-# Builds
-dist/
-build/
-*.exe
-*.deb
-*.AppImage
-
-# Virtual env
+# Virtual Environment
 .venv/
+venv/
 env/
 
-# OS
+# Distribution / Build
+build/
+dist/
+*.spec
+
+# IDEs
+.vscode/
+.idea/
+
+# System
 .DS_Store
 Thumbs.db
+
+# Project specific
+test_*.py
+test_*.wav
+test_*.mp4
+*.deb
+files_to_convert.txt
