@@ -1,0 +1,10 @@
+[Desktop Entry]
+Type=Application
+Name=FileConverter
+Comment=Convert images, videos, and PDFs
+# Adjust paths as needed for actual installation
+Exec=/home/vishnu/Dev/mockup-projects/fileconvertor/.venv/bin/python /home/vishnu/Dev/mockup-projects/fileconvertor/src/main.py %F
+Icon=utilities-terminal
+Terminal=false
+Categories=Utility;
+MimeType=image/jpeg;image/png;image/webp;video/mp4;video/x-matroska;video/webm;application/pdf;

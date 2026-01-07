@@ -15,22 +15,33 @@ from src.core.preset_manager import PresetManager
 def main():
     app = QApplication(sys.argv)
     
-    if len(sys.argv) > 1:
-        # Context Menu Mode
-        file_paths = sys.argv[1:]
-        progress_window = ProgressWindow(auto_start=False)
+    if len(sys.argv) > 1 and sys.argv[1] == "--quick-convert":
+        if len(sys.argv) < 3:
+            print("Usage: main.py --quick-convert <preset_name> <file1> [file2 ...]")
+            sys.exit(1)
+            
+        preset_name = sys.argv[2]
+        files = sys.argv[3:]
         
-        for path in file_paths:
+        # Quick Convert Mode: Direct to ProgressWindow
+        progress_window = ProgressWindow(auto_start=True)
+        for path in files:
             if os.path.isfile(path):
-                file_type = FileDetector.detect(path)
-                presets = PresetManager.get_presets(file_type)
-                default_preset = next(iter(presets.keys())) if presets else "Unknown"
-                progress_window.add_file(path, default_preset)
+                 progress_window.add_file(os.path.basename(path), preset_name, path)
         
         progress_window.show_window()
+        
     else:
-        # GUI Mode
+        # Standard GUI Mode
         window = MainWindow()
+        
+        if len(sys.argv) > 1:
+            # Load files from arguments
+            file_paths = sys.argv[1:]
+            for path in file_paths:
+                if os.path.isfile(path):
+                    window.add_file(path)
+        
         window.show()
 
     sys.exit(app.exec())
