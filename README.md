@@ -4,7 +4,6 @@ FileConverter is a powerful, desktop-integrated file conversion utility.
 It currently targets Linux, with Windows support planned.
 
 
-![FileConverter GUI]
 
 ## Features
 
