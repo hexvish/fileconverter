@@ -41,11 +41,29 @@ def get_output_path(input_path, preset_data):
 def main():
     parser = argparse.ArgumentParser(description="File Converter CLI")
     parser.add_argument("files", nargs="*", help="Files to convert")
-    parser.add_argument("--preset", help="Specific preset to use (e.g. 'To PNG')")
+    parser.add_argument("--preset", type=str, help="Preset name to use (e.g. 'To PNG')")
     parser.add_argument("--list-presets", nargs="?", const="ALL", help="List available presets. Optionally provide a file path to filter by type.")
-    
+    parser.add_argument("--install-integration", action="store_true", help="Install context menu scripts for Nautilus/Nemo")
+
     args = parser.parse_args()
     
+    # Handle Integration Installation
+    if args.install_integration:
+        from src.scripts.generate_nautilus_scripts import main as install_scripts
+        print("Installing context menu integration...")
+        try:
+             # We need to make sure the generator uses THIS executable if frozen
+            if getattr(sys, 'frozen', False):
+                # When frozen, we want the scripts to point to this executable
+                os.environ["FILECONVERTER_EXEC_PATH"] = sys.executable
+            
+            install_scripts()
+            print("Integration installed successfully.")
+        except Exception as e:
+            print(f"Failed to install integration: {e}")
+        return
+
+    # Handle List Presets
     if args.list_presets:
         PresetManager.load_presets()
         

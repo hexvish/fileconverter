@@ -1,0 +1,10 @@
+Package: fileconverter
+Version: 1.0.0
+Section: utils
+Priority: optional
+Architecture: amd64
+Depends: ffmpeg, imagemagick, ghostscript
+Maintainer: Vishnu <vishnu@example.com>
+Description: A powerful file converter utility.
+ Convert images, videos, audio, and compress PDFs.
+ Supports batch conversion and context menu integration.

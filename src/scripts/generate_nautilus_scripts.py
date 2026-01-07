@@ -27,13 +27,35 @@ def main():
         data = json.load(f)
 
     # Template setup
-    venv_python = os.path.join(PROJECT_ROOT, ".venv", "bin", "python")
-    if os.path.exists(venv_python):
-        python_exec = venv_python
+    # Check for override (e.g. from frozen executable)
+    custom_exec = os.environ.get("FILECONVERTER_EXEC_PATH")
+    if custom_exec:
+        python_exec = "" # Not needed if executing binary directly? Wait, binary needs arguments. 
+        # If binary, command is: /path/to/binary --quick-convert ...
+        # If python, command is: /path/to/python /path/to/main.py --quick-convert ...
+        
+        # We need to adjust the template based on this.
+        # Let's assume custom_exec is the full command prefix to run the app.
+        pass
     else:
-        python_exec = "python3"
+        python_exec = "python3" # Default
+        
+    main_py_path = os.path.join(PROJECT_ROOT, "src", "main.py")
     
-    main_py = os.path.join(PROJECT_ROOT, "src", "main.py")
+    # If custom_exec is set (frozen), we use it as the command and ignore main_py_path
+    # If not, we try to use venv python + main.py
+    
+    if custom_exec:
+        base_cmd = f'"{custom_exec}"' # The binary itself
+        # When running the binary, we don't need "python src/main.py", just the binary path
+    else:
+        # Development mode
+        venv_python = os.path.join(PROJECT_ROOT, ".venv", "bin", "python")
+        if os.path.exists(venv_python):
+            python_exec = venv_python
+        
+        base_cmd = f'"{python_exec}" "{main_py_path}"'
+
 
     # Determine valid targets
     valid_targets = []
@@ -95,7 +117,7 @@ for selection in $SELECTED_FILES; do
 done
 
 # Execute
-eval "{python_exec} \\"{main_py}\\" --quick-convert \\"{preset_name}\\" $quoted_paths"
+eval "{base_cmd} --quick-convert \\"{preset_name}\\" $quoted_paths"
 """
                 
                 with open(script_path, 'w') as f:

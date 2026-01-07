@@ -11,8 +11,18 @@ from src.ui.mainwindow import MainWindow
 from src.ui.progresswindow import ProgressWindow
 from src.core.file_detector import FileDetector
 from src.core.preset_manager import PresetManager
+import src.cli as cli_module
 
 def main():
+    # Check for CLI-specific arguments first
+    cli_flags = ["--list-presets", "--install-integration", "--preset", "-h", "--help"]
+    # Check if any argument matches or looks like a CLI operation
+    # Note: --quick-convert is a GUI operation
+    if len(sys.argv) > 1:
+        if sys.argv[1] in ["--list-presets", "--install-integration"] or "--preset" in sys.argv:
+             cli_module.main()
+             return
+
     app = QApplication(sys.argv)
     
     if len(sys.argv) > 1 and sys.argv[1] == "--quick-convert":
