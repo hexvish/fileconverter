@@ -18,11 +18,11 @@ import src.cli as cli_module
 
 def main():
     # Check for CLI-specific arguments first
-    cli_flags = ["--list-presets", "--install-integration", "--preset", "-h", "--help"]
+    cli_flags = ["--list-presets", "--install-integration", "--remove-integration", "--preset", "-h", "--help"]
     # Check if any argument matches or looks like a CLI operation
     # Note: --quick-convert is a GUI operation
     if len(sys.argv) > 1:
-        if sys.argv[1] in ["--list-presets", "--install-integration"] or "--preset" in sys.argv:
+        if sys.argv[1] in ["--list-presets", "--install-integration", "--remove-integration"] or "--preset" in sys.argv:
              cli_module.main()
              return
 

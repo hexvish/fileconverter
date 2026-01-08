@@ -1,11 +1,10 @@
-fileconverter (1.2.5) stable; urgency=high
+fileconverter (1.2.6) stable; urgency=high
 
-  * Hotfix: fix <short description of the bug>
+  * Hotfix: fix context menu auto integration
 
- -- Vishnu S S <vishnutvm33@gmail.com>  Thu, 08 Jan 2026 17:30:00 +0530
+ -- Vishnu S S <vishnutvm33@gmail.com>  Thu, 08 Jan 2026 21:15:00 +0530
 
-
-fileconverter (1.2.4) stable; urgency=medium
+fileconverter (1.2.5) stable; urgency=medium
 
   * Initial public release
   * Windows build support

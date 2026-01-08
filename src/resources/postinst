@@ -1,0 +1,31 @@
+#!/bin/bash
+set -e
+
+# Function to install integration for a user
+install_for_user() {
+    local username=$1
+    local user_home=$(getent passwd "$username" | cut -d: -f6)
+    
+    if [ -d "$user_home" ]; then
+        echo "Installing context menu integration for user: $username"
+        # Run as the original user
+        if [ -x /usr/local/bin/fileconverter ]; then
+            sudo -u "$username" HOME="$user_home" /usr/local/bin/fileconverter --install-integration || true
+        fi
+    fi
+}
+
+# 1. Try SUDO_USER if set
+if [ -n "$SUDO_USER" ]; then
+    install_for_user "$SUDO_USER"
+else
+    # 2. Otherwise, iterate through all human users (UID >= 1000)
+    # This covers GUI installers where SUDO_USER might be missing
+    while IFS=: read -r username _ uid _ _ _ _; do
+        if [ "$uid" -ge 1000 ] && [ "$uid" -lt 60000 ]; then
+            install_for_user "$username"
+        fi
+    done < /etc/passwd
+fi
+
+exit 0
