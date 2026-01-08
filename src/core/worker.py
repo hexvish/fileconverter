@@ -31,13 +31,21 @@ class ConversionWorker(QThread):
             input_path = job['path']
             preset_name = job['preset_name']
             
-            file_type = FileDetector.detect(input_path)
-            presets = PresetManager.get_presets(file_type)
-            preset_data = presets.get(preset_name)
+            if 'custom_config' in job:
+                # Use custom config directly
+                preset_data = job['custom_config']
+            else:
+                # Lookup by name
+                file_type = FileDetector.detect(input_path)
+                presets = PresetManager.get_presets(file_type)
+                preset_data = presets.get(preset_name)
 
             if not preset_data:
                 self.finished_signal.emit(input_path, False, "Invalid Preset")
                 continue
+            
+            # Ensure file type is detected (needed for engine dispatch)
+            file_type = FileDetector.detect(input_path)
 
             # Generate Output Path
             input_dir = os.path.dirname(input_path)
@@ -45,7 +53,9 @@ class ConversionWorker(QThread):
             name, ext = os.path.splitext(filename)
             
             # Determine new extension if format change
-            if preset_data.get("action") == "convert" and "format" in preset_data:
+            if "format" in preset_data:
+                new_ext = "." + preset_data["format"]
+            elif preset_data.get("action") == "convert" and "format" in preset_data:
                 new_ext = "." + preset_data["format"]
             else:
                 new_ext = ext

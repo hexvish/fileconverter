@@ -43,7 +43,7 @@ class ProgressWindow(QWidget):
         self.jobs = []
         self.file_row_map = {} # Maps filename to row index
 
-    def add_file(self, filename: str, preset_name: str, full_path: str = None):
+    def add_file(self, filename: str, preset_name: str, full_path: str = None, custom_config: dict = None):
         if not full_path and os.path.isfile(filename):
              full_path = filename
              filename = os.path.basename(filename)
@@ -63,7 +63,10 @@ class ProgressWindow(QWidget):
         self.table.setItem(row, 3, QTableWidgetItem("Pending"))
         
         if full_path:
-            self.jobs.append({'path': full_path, 'preset_name': preset_name})
+            job = {'path': full_path, 'preset_name': preset_name}
+            if custom_config:
+                job['custom_config'] = custom_config
+            self.jobs.append(job)
             self.file_row_map[full_path] = row
         else:
             # Error state if no valid path

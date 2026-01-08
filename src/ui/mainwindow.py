@@ -7,6 +7,7 @@ from PySide6.QtGui import QAction
 from src.core.file_detector import FileDetector, FileType
 from src.core.preset_manager import PresetManager
 from src.ui.progresswindow import ProgressWindow
+from src.ui.custom_dialog import CustomPresetDialog
 
 class MainWindow(QMainWindow):
     def __init__(self):
@@ -100,7 +101,36 @@ class MainWindow(QMainWindow):
         menu.exec(self.file_list.mapToGlobal(pos))
 
     def set_preset(self, item, preset_name):
+        # Check if "Custom..." was selected
+        if preset_name == "Custom...":
+            file_type = item.data(Qt.UserRole + 1)
+            dialog = CustomPresetDialog(file_type.name, self)
+            if dialog.exec():
+                custom_config = dialog.get_config()
+                # Store custom config in a new UserRole
+                item.setData(Qt.UserRole + 3, custom_config)
+                # Update text to show it's custom
+                fmt = custom_config.get("format", "unknown")
+                w = custom_config.get("width", 0)
+                h = custom_config.get("height", 0)
+                
+                details = f"({fmt})"
+                if w > 0 or h > 0:
+                     details = f"({fmt}, {w}x{h})"
+                
+                # We still store "Custom..." as the preset name key
+                item.setData(Qt.UserRole + 2, preset_name)
+                
+                # Update visual text manually since update_item_text might need tweaking
+                file_path = item.data(Qt.UserRole)
+                text = f"[{file_type.name}] {os.path.basename(file_path)}\n   -> Custom {details}"
+                item.setText(text)
+                return
+
+        # Normal preset selection
         item.setData(Qt.UserRole + 2, preset_name)
+        # Clear custom data if any
+        item.setData(Qt.UserRole + 3, None)
         self.update_item_text(item)
 
     def start_conversion(self):
@@ -118,8 +148,11 @@ class MainWindow(QMainWindow):
         for item in items_to_process:
             file_path = item.data(Qt.UserRole)
             preset_name = item.data(Qt.UserRole + 2)
+            custom_config = item.data(Qt.UserRole + 3)
+            
             if file_path:
-                self.progress_window.add_file(os.path.basename(file_path), preset_name, file_path)
+                # Pass custom_config if it exists
+                self.progress_window.add_file(os.path.basename(file_path), preset_name, file_path, custom_config)
             else:
                 print("Error: Item missing file path")
 

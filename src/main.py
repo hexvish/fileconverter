@@ -11,6 +11,7 @@ from src.ui.mainwindow import MainWindow
 from src.ui.progresswindow import ProgressWindow
 from src.core.file_detector import FileDetector
 from src.core.preset_manager import PresetManager
+from src.ui.custom_dialog import CustomPresetDialog
 import src.cli as cli_module
 
 def main():
@@ -33,11 +34,26 @@ def main():
         preset_name = sys.argv[2]
         files = sys.argv[3:]
         
+        custom_config = None
+        
+        # Handle Custom Preset Interactivity
+        if preset_name == "Custom..." and len(files) > 0:
+            # We need to detect file type of the first file to show correct options
+            first_file = files[0]
+            if os.path.exists(first_file):
+                file_type = FileDetector.detect(first_file)
+                dialog = CustomPresetDialog(file_type.name)
+                if dialog.exec():
+                    custom_config = dialog.get_config()
+                else:
+                    # User cancelled
+                    sys.exit(0)
+        
         # Quick Convert Mode: Direct to ProgressWindow
         progress_window = ProgressWindow(auto_start=True)
         for path in files:
             if os.path.isfile(path):
-                 progress_window.add_file(os.path.basename(path), preset_name, path)
+                 progress_window.add_file(os.path.basename(path), preset_name, path, custom_config)
         
         progress_window.show_window()
         
