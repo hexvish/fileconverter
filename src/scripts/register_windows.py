@@ -22,16 +22,34 @@ def register_context_menu():
         # NO, usually we want to register the binary.
         # Let's assume this script is run BY the user after building, OR included in the build.
         # Let's try to find the dist/FileConverter/FileConverter.exe
+        # Search for executable in common locations
         project_root = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-        potential_exe = os.path.join(project_root, "dist", "FileConverter", "FileConverter.exe")
-        if os.path.exists(potential_exe):
-            exe_path = potential_exe
-        else:
-            print(f"Could not find likely executable at {potential_exe}")
-            print("Please build the project first using build_windows.bat")
-            return
+        
+        possible_paths = [
+            os.path.join(project_root, "dist", "FileConverter", "FileConverter.exe"), # Standard Build
+            os.path.join(os.getcwd(), "FileConverter.exe"), # Running from dist folder
+            os.path.join(os.getcwd(), "dist", "FileConverter", "FileConverter.exe"), # Running from root
+            os.path.abspath("FileConverter.exe") # Current dir
+        ]
+        
+        exe_path = None
+        for p in possible_paths:
+            if os.path.exists(p):
+                exe_path = p
+                break
+                
+        if not exe_path:
+            print("Could not find 'FileConverter.exe'.")
+            print(f"Searched in: {possible_paths}")
+            print("Please make sure you have built the project or placed this script near the executable.")
+            
+            # Manual Input Fallback
+            exe_path = input("Enter full path to FileConverter.exe: ").strip().strip('"')
+            if not os.path.exists(exe_path):
+                print("Invalid path. Exiting.")
+                return
 
-    exe_path = os.path.abspath(exe_path)
+    exe_path = os.path.abspath(exe_path).replace("/", "\\")
     print(f"Registering context menu for: {exe_path}")
 
     # Key Name in registry (Background context menu)
