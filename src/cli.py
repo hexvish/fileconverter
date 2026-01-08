@@ -14,6 +14,7 @@ from src.core.image_engine import ImageEngine
 from src.core.video_engine import VideoEngine
 from src.core.audio_engine import AudioEngine
 from src.core.pdf_engine import PdfEngine
+from src.integration import main as install_scripts, remove_integration
 
 def get_output_path(input_path, preset_data):
     input_dir = os.path.dirname(input_path)
@@ -44,12 +45,12 @@ def main():
     parser.add_argument("--preset", type=str, help="Preset name to use (e.g. 'To PNG')")
     parser.add_argument("--list-presets", nargs="?", const="ALL", help="List available presets. Optionally provide a file path to filter by type.")
     parser.add_argument("--install-integration", action="store_true", help="Install context menu scripts for Nautilus/Nemo")
+    parser.add_argument("--remove-integration", action="store_true", help="Remove context menu scripts for Nautilus/Nemo")
 
     args = parser.parse_args()
     
     # Handle Integration Installation
     if args.install_integration:
-        from src.scripts.generate_nautilus_scripts import main as install_scripts
         print("Installing context menu integration...")
         try:
              # We need to make sure the generator uses THIS executable if frozen
@@ -57,10 +58,17 @@ def main():
                 # When frozen, we want the scripts to point to this executable
                 os.environ["FILECONVERTER_EXEC_PATH"] = sys.executable
             
-            install_scripts()
-            print("Integration installed successfully.")
+            if install_scripts():
+                print("Integration installed successfully.")
+            else:
+                print("Integration installation failed (check errors above).")
         except Exception as e:
             print(f"Failed to install integration: {e}")
+        return
+    
+    # Handle Integration Removal
+    if args.remove_integration:
+        remove_integration()
         return
 
     # Handle List Presets

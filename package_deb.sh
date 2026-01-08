@@ -32,6 +32,17 @@ sed 's|Exec=.*|Exec=/usr/local/bin/fileconverter %F|' fileconverter.desktop > "$
 echo "Copying control file..."
 cp "src/resources/control" "$BUILD_DIR/DEBIAN/control"
 
+# Copy maintainer scripts
+echo "Copying maintainer scripts..."
+if [ -f "src/resources/postinst" ]; then
+    cp "src/resources/postinst" "$BUILD_DIR/DEBIAN/postinst"
+    chmod 755 "$BUILD_DIR/DEBIAN/postinst"
+fi
+if [ -f "src/resources/prerm" ]; then
+    cp "src/resources/prerm" "$BUILD_DIR/DEBIAN/prerm"
+    chmod 755 "$BUILD_DIR/DEBIAN/prerm"
+fi
+
 # Extract version and architecture from control file
 VERSION=$(grep "Version:" "src/resources/control" | awk '{print $2}')
 ARCH=$(grep "Architecture:" "src/resources/control" | awk '{print $2}')
