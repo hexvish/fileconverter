@@ -3,24 +3,46 @@ import os
 import json
 import stat
 import shutil
+import sys
 
 # Configuration
-# Configuration
-SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
-PROJECT_ROOT = os.path.dirname(os.path.dirname(SCRIPT_DIR))
+if getattr(sys, 'frozen', False) and hasattr(sys, '_MEIPASS'):
+    PROJECT_ROOT = sys._MEIPASS
+else:
+    SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
+    PROJECT_ROOT = os.path.dirname(os.path.dirname(SCRIPT_DIR))
+
 PRESETS_JSON = os.path.join(PROJECT_ROOT, "src", "resources", "presets.json")
 
 # Potential script directories
 TARGET_DIRS = [
     os.path.expanduser("~/.local/share/nautilus/scripts/File Converter"),
     os.path.expanduser("~/.local/share/nemo/scripts/File Converter"),
+    os.path.expanduser("~/.gnome2/nemo-scripts/File Converter"),
     os.path.expanduser("~/.gnome2/nemo-scripts/File Converter")
 ]
+
+def remove_integration():
+    print("Removing Context Menu Integration...")
+    found = False
+    for path in TARGET_DIRS:
+        if os.path.exists(path):
+            print(f"Removing: {path}")
+            try:
+                shutil.rmtree(path)
+                found = True
+            except Exception as e:
+                print(f"Error removing {path}: {e}")
+    
+    if not found:
+        print("No integration files found to remove.")
+    else:
+        print("Removal complete. Please restart your file manager (nautilus -q or nemo -q).")
 
 def main():
     if not os.path.exists(PRESETS_JSON):
         print(f"Error: presets.json not found at {PRESETS_JSON}")
-        return
+        return False
 
     # Load Presets
     with open(PRESETS_JSON, 'r') as f:
@@ -154,6 +176,11 @@ eval "{base_cmd} --media-info \\"$SELECTED_FILE\\""
         os.chmod(mi_script_path, st.st_mode | stat.S_IEXEC)
                 
     print("Done! You may need to restart your file manager (nautilus -q or nemo -q).")
+    return True
 
 if __name__ == "__main__":
-    main()
+    import sys
+    if len(sys.argv) > 1 and sys.argv[1] == "--remove":
+        remove_integration()
+    else:
+        main()

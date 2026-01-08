@@ -1,0 +1,8 @@
+fileconverter (1.2.5) stable; urgency=medium
+
+  * Initial public release
+  * Windows build support
+  * Linux .deb packaging
+
+ -- Vishnu S S <vishnutvm33@gmail.com>  Thu, 08 Jan 2026 15:30:00 +0530
+

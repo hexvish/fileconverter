@@ -30,6 +30,8 @@ rm -rf dist build *.spec files_to_convert.txt
     --add-data "src/resources/presets.json:src/resources" \
     --add-data "fileconverter.desktop:." \
     --hidden-import "PySide6" \
+    --paths "." \
+    --hidden-import "src.integration" \
     --hidden-import "Shiboken6" \
     run.py
 
