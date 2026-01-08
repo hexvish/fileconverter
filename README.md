@@ -3,18 +3,20 @@
 FileConverter is a powerful, desktop-integrated file conversion utility.
 It currently targets Linux, with Windows support planned.
 
-
-
 ## Features
 
--   **Image Conversion**: Convert between `JPG`, `PNG`, `WEBP`, `PDF`. Resize and optimize for Web/Email.
--   **Video Conversion**: Convert `MP4`, `AVI`, `WEBM`, `MKV`. Standard quality presets (1080p, 720p).
--   **Audio Support**:
-    -   Convert Audio: `MP3`, `WAV`, `OGG`, `FLAC`, `AAC`, etc.
-    -   **Extract Audio**: Extract audio tracks from video files directly to `MP3` or `WAV`.
--   **PDF Tools**: Compress PDFs for Screen/Web or Ebook/Printing quality.
+-   **Image Conversion**:
+    -   Convert between `JPG`, `PNG`, `WEBP`, `PDF`.
+    -   **Custom Resolution**: Set specific Width/Height and Format via a GUI dialog.
+-   **Video Conversion**:
+    -   Convert `MP4`, `AVI`, `WEBM`, `MKV`.
+    -   **Extract Audio**: Extract audio tracks directly to `MP3` or `WAV`.
+    -   **Custom Resize**: Force specific dimensions (e.g., convert landscape to portrait).
+-   **Audio Support**: Convert `MP3`, `WAV`, `OGG`, `FLAC`, `AAC`.
+-   **Media Info Tool**: Instant popup displaying codec, resolution, bitrate, and file size details.
+-   **PDF Tools**: Compress PDFs for Screen/Web or Ebook/Printing.
 -   **System Integration**:
-    -   **Context Menu**: Right-click files in Nautilus (GNOME) or Nemo (Linux Mint) to convert instantly.
+    -   **Right-Click Menu**: Seamless integration with Nautilus (GNOME) and Nemo (Linux Mint/Cinnamon).
     -   **Open With**: Open files directly into the FileConverter GUI.
 
 ## Requirements
@@ -27,6 +29,50 @@ It currently targets Linux, with Windows support planned.
 
 ## Installation
 
+### Method 1: Debian/Ubuntu Package (Recommended)
+Download the latest `.deb` release and install it:
+
+```bash
+sudo dpkg -i fileconverter_1.2.3_amd64.deb
+```
+*(Make sure to replace the version number with the file you downloaded)*
+
+**Enable Context Menu:**
+After installing, run this command once to set up the right-click menu:
+```bash
+fileconverter --install-integration
+```
+*Then restart your file manager (`nautilus -q` or `nemo -q`).*
+
+## Usage
+
+### 1. Context Menu (Right-Click)
+The primary way to use FileConverter is via the file manager:
+1.  **Right-click** files in Nautilus or Nemo.
+2.  Navigate to **Scripts > File Converter**.
+3.  Select an option:
+    -   **Presets**: e.g., `Image > To PNG`, `Video > Extract Audio`.
+    -   **Custom...**: Define custom Width, Height, and Format.
+    -   **00_Media Info**: View file metadata.
+
+### 2. Desktop App
+Search for **FileConverter** in your system menu to launch the standalone GUI. Custom presets and batch jobs can be managed here.
+
+### 3. Command Line (CLI)
+```bash
+# List available presets
+fileconverter --list-presets
+
+# Quick Convert (Dialog Mode)
+fileconverter --quick-convert "To PNG" image.jpg
+
+# Media Info
+fileconverter --media-info video.mp4
+```
+
+## Development
+
+### Running from Source
 1.  **Clone and Setup**:
     ```bash
     git clone <repo-url>
@@ -35,54 +81,14 @@ It currently targets Linux, with Windows support planned.
     source .venv/bin/activate
     pip install -r requirements.txt
     ```
-
-2.  **Install Desktop Entry** (for "Open With"):
+2.  **Run**:
     ```bash
-    cp fileconverter.desktop ~/.local/share/applications/
-    update-desktop-database ~/.local/share/applications/
+    python src/main.py
     ```
 
-3.  **Install Context Menu Scripts** (Nautilus/Nemo):
-    ```bash
-    python src/scripts/generate_nautilus_scripts.py
-    ```
-    *Restart your file manager (`nautilus -q` or `nemo -q`) to see the changes.*
-
-## Usage
-
-### GUI
-Run the application:
-```bash
-python src/main.py
-```
-Or use "Open With... FileConverter" on any supported file.
-
-### Context Menu
-1.  Right-click files in your file manager.
-2.  Navigate to **Scripts > File Converter**.
-3.  Select a preset (e.g., `Image > To PNG` or `Video > Extract Audio (MP3)`).
-4.  A progress window will appear and process your files.
-
-### Command Line (CLI)
-Headless conversion from the terminal:
-```bash
-# List available presets
-python src/cli.py --list-presets
-
-# Convert files
-python src/cli.py input.jpg --preset "To PNG"
-python src/cli.py video.mp4 --preset "Extract Audio (MP3)"
-```
-
-### Quick Convert (GUI Launcher)
-Launch the GUI directly into conversion mode:
-```bash
-python src/main.py --quick-convert "To JPG" file1.png file2.png
-```
-
-## Structure
--   `src/main.py`: Entry point for GUI.
--   `src/cli.py`: Entry point for CLI.
--   `src/core/`: Engines (FFmpeg, ImageMagick, Ghostscript) and logic.
--   `src/resources/presets.json`: Configurable conversion presets.
--   `src/scripts/`: Integration scripts.
+### Project Structure
+-   `src/main.py`: GUI Entry point.
+-   `src/cli.py`: CLI Entry point.
+-   `src/core/`: Engines (FFmpeg, ImageMagick) and business logic.
+-   `src/resources/`: Assets and Presets config.
+-   `src/scripts/`: Context menu integration scripts.
