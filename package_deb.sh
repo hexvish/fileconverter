@@ -5,11 +5,8 @@ set -e
 SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
 cd "$SCRIPT_DIR"
 
-# verify dist/FileConverter exists
-if [ ! -f "dist/FileConverter" ]; then
-    echo "Error: dist/FileConverter not found. Running build_linux.sh..."
-    ./build_linux.sh
-fi
+echo "Running build_linux.sh to ensure latest binary..."
+./build_linux.sh
 
 echo "Creating Debian Package..."
 
@@ -35,9 +32,14 @@ sed 's|Exec=.*|Exec=/usr/local/bin/fileconverter %F|' fileconverter.desktop > "$
 echo "Copying control file..."
 cp "src/resources/control" "$BUILD_DIR/DEBIAN/control"
 
+# Extract version and architecture from control file
+VERSION=$(grep "Version:" "src/resources/control" | awk '{print $2}')
+ARCH=$(grep "Architecture:" "src/resources/control" | awk '{print $2}')
+DEB_NAME="fileconverter_${VERSION}_${ARCH}.deb"
+
 # Build package
 echo "Building .deb..."
-dpkg-deb --build "$BUILD_DIR" "fileconverter_1.2.3_amd64.deb"
+dpkg-deb --build "$BUILD_DIR" "$DEB_NAME"
 
-echo "Package created: fileconverter_1.2.3_amd64.deb"
-echo "To install: sudo dpkg -i fileconverter_1.2.3_amd64.deb"
+echo "Package created: $DEB_NAME"
+echo "To install: sudo dpkg -i $DEB_NAME"

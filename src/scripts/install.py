@@ -7,8 +7,11 @@ import json
 from pathlib import Path
 
 
-def get_project_root():
-    return Path(__file__).resolve().parent.parent.parent
+def get_resource_path():
+    if getattr(sys, 'frozen', False):
+        return Path(sys._MEIPASS)
+    else:
+        return Path(__file__).resolve().parent.parent.parent
 
 
 def delete_recursive(key, subkey=""):
@@ -41,14 +44,22 @@ def install():
     print("Starting installation...")
 
     # 1. Locate Source
-    project_root = get_project_root()
-    dist_dir = project_root / "dist" / "FileConverter"
-    resources_dir = project_root / "src" / "resources"
-    presets_path = resources_dir / "presets.json"
+    # When frozen, we look in sys._MEIPASS. When raw, we look relative to script.
+    base_path = get_resource_path()
+
+    if getattr(sys, 'frozen', False):
+        # Inside PyInstaller bundle (we will add these as data)
+        dist_dir = base_path / "FileConverter"
+        presets_path = base_path / "presets.json"
+    else:
+        # Running from source
+        dist_dir = base_path / "dist" / "FileConverter"
+        presets_path = base_path / "src" / "resources" / "presets.json"
 
     if not dist_dir.exists():
         print(f"Error: Build directory not found at {dist_dir}")
         print("Please run build_windows.bat first.")
+        # If frozen, this means the bundle is broken.
         return False
 
     if not presets_path.exists():
@@ -129,7 +140,7 @@ def register_context_menu(exe_path, presets_path):
 
     base_key_path = r"Software\Classes\*\shell\FileConverter"
 
-    # CLEANUP: Delete existing key to remove specific values
+    # CLEANUP
     print("Cleaning up old registry keys...")
     try:
         root = winreg.ConnectRegistry(None, winreg.HKEY_CURRENT_USER)
@@ -144,12 +155,11 @@ def register_context_menu(exe_path, presets_path):
         # 1. Create Root Menu "Convert with FileConverter"
         root_key = winreg.CreateKey(winreg.HKEY_CURRENT_USER, base_key_path)
         winreg.SetValueEx(root_key, "", 0, winreg.REG_SZ,
-                          "Convert with FileConverter")  # Default Value
+                          "Convert with FileConverter")
         winreg.SetValueEx(root_key, "MUIVerb", 0,
                           winreg.REG_SZ, "Convert with FileConverter")
         winreg.SetValueEx(root_key, "Icon", 0, winreg.REG_SZ, str(exe_path))
-        winreg.SetValueEx(root_key, "SubCommands", 0,
-                          winreg.REG_SZ, "")  # Required for cascading
+        winreg.SetValueEx(root_key, "SubCommands", 0, winreg.REG_SZ, "")
 
         root_shell_key = winreg.CreateKey(root_key, "shell")
 
