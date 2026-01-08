@@ -1,7 +1,8 @@
 from PySide6.QtWidgets import (QWidget, QVBoxLayout, QTableWidget, 
                                QTableWidgetItem, QPushButton, QHeaderView, 
-                               QProgressBar, QLabel, QHBoxLayout)
-from PySide6.QtCore import Qt
+                               QProgressBar, QLabel, QHBoxLayout, QMenu)
+from PySide6.QtCore import Qt, QUrl
+from PySide6.QtGui import QAction, QDesktopServices
 import os
 
 from src.core.worker import ConversionWorker
@@ -24,6 +25,8 @@ class ProgressWindow(QWidget):
         self.table.setColumnCount(4)
         self.table.setHorizontalHeaderLabels(["Filename", "Preset", "Progress", "Status"])
         self.table.horizontalHeader().setSectionResizeMode(0, QHeaderView.Stretch)
+        self.table.setContextMenuPolicy(Qt.CustomContextMenu)
+        self.table.customContextMenuRequested.connect(self.open_menu)
         self.layout.addWidget(self.table)
 
         # Buttons
@@ -42,6 +45,7 @@ class ProgressWindow(QWidget):
         self.worker = None
         self.jobs = []
         self.file_row_map = {} # Maps filename to row index
+        self.outputs = {} # Maps row index to output path
 
     def add_file(self, filename: str, preset_name: str, full_path: str = None, custom_config: dict = None):
         if not full_path and os.path.isfile(filename):
@@ -95,10 +99,12 @@ class ProgressWindow(QWidget):
              if pbar:
                  pbar.setValue(progress)
 
-    def update_status(self, file_path, success, message):
+    def update_status(self, file_path, output_path, success, message):
         row = self.file_row_map.get(file_path)
         if row is not None:
-            self.table.setItem(row, 3, QTableWidgetItem(message))
+             self.table.setItem(row, 3, QTableWidgetItem(message))
+             if success and output_path:
+                 self.outputs[row] = output_path
             
     def on_all_finished(self):
         self.info_label.setText("All conversions finished.")
@@ -111,3 +117,20 @@ class ProgressWindow(QWidget):
             self.worker.stop()
             self.worker.wait()
         self.close()
+
+    def open_menu(self, position):
+        row = self.table.currentRow()
+        output_path = self.outputs.get(row)
+        
+        menu = QMenu()
+        if output_path and os.path.exists(output_path):
+            open_action = QAction("Open File Location", self)
+            open_action.triggered.connect(lambda: self.open_file_location(output_path))
+            menu.addAction(open_action)
+        
+        if not menu.isEmpty():
+            menu.exec(self.table.viewport().mapToGlobal(position))
+
+    def open_file_location(self, path):
+        folder = os.path.dirname(path)
+        QDesktopServices.openUrl(QUrl.fromLocalFile(folder))

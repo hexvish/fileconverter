@@ -9,7 +9,7 @@ from src.core.preset_manager import PresetManager
 
 class ConversionWorker(QThread):
     progress_signal = Signal(str, int)  # file_path, progress (0-100)
-    finished_signal = Signal(str, bool, str)  # file_path, success, message
+    finished_signal = Signal(str, str, bool, str)  # file_path, output_path, success, message
     all_finished_signal = Signal()
 
     def __init__(self, job_list):
@@ -41,7 +41,7 @@ class ConversionWorker(QThread):
                 preset_data = presets.get(preset_name)
 
             if not preset_data:
-                self.finished_signal.emit(input_path, False, "Invalid Preset")
+                self.finished_signal.emit(input_path, "", False, "Invalid Preset")
                 continue
             
             # Ensure file type is detected (needed for engine dispatch)
@@ -116,14 +116,14 @@ class ConversionWorker(QThread):
 
             # Check if stopped during process
             if not self.is_running:
-                self.finished_signal.emit(input_path, False, "Cancelled")
+                self.finished_signal.emit(input_path, output_path, False, "Cancelled")
                 continue
 
             if success:
                 self.progress_signal.emit(input_path, 100)
-                self.finished_signal.emit(input_path, True, "Completed")
+                self.finished_signal.emit(input_path, output_path, True, "Completed")
             else:
-                self.finished_signal.emit(input_path, False, error_msg)
+                self.finished_signal.emit(input_path, output_path, False, error_msg)
 
         self.all_finished_signal.emit()
 
