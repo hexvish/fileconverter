@@ -18,8 +18,16 @@ class VideoEngine:
         action = preset.get("action")
         
         if action == "resize":
+            width = preset.get("width")
             height = preset.get("height")
-            if height:
+            
+            if width and height:
+                # User specified both, force exact dimensions
+                # Note: This may change aspect ratio, but adheres to user request of "same as I give"
+                cmd.extend(["-vf", f"scale={width}:{height}"])
+            elif width:
+                cmd.extend(["-vf", f"scale={width}:-2"])
+            elif height:
                 cmd.extend(["-vf", f"scale=-2:{height}"])
         
         cmd.append(output_path)

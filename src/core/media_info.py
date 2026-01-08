@@ -32,7 +32,7 @@ class MediaInfoExtractor:
                 "file": os.path.basename(file_path),
                 "path": file_path,
                 "size_bytes": os.path.getsize(file_path),
-                "format": data.get("format", {}).get("format_name", "Unknown"),
+                "format": MediaInfoExtractor._get_clean_format(data.get("format", {}), file_path),
                 "duration": data.get("format", {}).get("duration", "N/A"),
                 "streams": []
             }
@@ -66,3 +66,18 @@ class MediaInfoExtractor:
 
         except Exception as e:
             return {"error": str(e)}
+
+    @staticmethod
+    def _get_clean_format(format_data, file_path):
+        raw_format = format_data.get("format_name", "Unknown")
+        long_name = format_data.get("format_long_name", "")
+        
+        # If it's a list (e.g. mov,mp4,m4a...), try to match extension
+        if "," in raw_format:
+            ext = os.path.splitext(file_path)[1].lower().replace(".", "")
+            candidates = raw_format.split(",")
+            if ext in candidates:
+                return ext.upper()
+            return candidates[0].upper() # Fallback to first
+            
+        return raw_format.upper()

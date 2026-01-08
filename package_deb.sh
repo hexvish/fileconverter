@@ -37,7 +37,7 @@ cp "src/resources/control" "$BUILD_DIR/DEBIAN/control"
 
 # Build package
 echo "Building .deb..."
-dpkg-deb --build "$BUILD_DIR" "fileconverter_1.1.1_amd64.deb"
+dpkg-deb --build "$BUILD_DIR" "fileconverter_1.2.3_amd64.deb"
 
-echo "Package created: fileconverter_1.1.1_amd64.deb"
-echo "To install: sudo dpkg -i fileconverter_1.1.1_amd64.deb"
+echo "Package created: fileconverter_1.2.3_amd64.deb"
+echo "To install: sudo dpkg -i fileconverter_1.2.3_amd64.deb"

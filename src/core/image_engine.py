@@ -15,7 +15,11 @@ class ImageEngine:
         if action == "resize":
             width = preset.get("width")
             height = preset.get("height")
-            if width:
+            
+            if width and height:
+                # Force dimensions with ! to match user intent of "output should be the same I give"
+                cmd.extend(["-resize", f"{width}x{height}!"])
+            elif width:
                 cmd.extend(["-resize", f"{width}x"])
             elif height:
                 cmd.extend(["-resize", f"x{height}"])
