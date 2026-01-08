@@ -29,7 +29,7 @@ It currently targets Linux, with Windows support planned.
 
 ## Installation
 
-### Method 1: Debian/Ubuntu Package (Recommended)
+### Method 1: Linux (Debian/Ubuntu)
 Download the latest `.deb` release and install it:
 
 ```bash
@@ -43,6 +43,16 @@ After installing, run this command once to set up the right-click menu:
 fileconverter --install-integration
 ```
 *Then restart your file manager (`nautilus -q` or `nemo -q`).*
+
+### Method 2: Windows
+Since this is primarily a Linux tool, Windows support is currently in **Beta**. You must build the executable yourself on a Windows machine:
+
+1.  **Clone the repo** on Windows.
+2.  Run `build_windows.bat` (This installs Python deps and builds the `.exe`).
+3.  The executable will be in `dist\FileConverter\FileConverter.exe`.
+4.  **Context Menu**: Run `python src/scripts/register_windows.py` (as Admin) to add the "Convert with FileConverter" right-click option.
+
+### Method 3: From Source (Developers)
 
 ## Usage
 
