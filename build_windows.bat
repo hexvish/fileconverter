@@ -37,7 +37,7 @@ pyinstaller --noconfirm --clean --windowed ^
     --name "FileConverter" ^
     --add-data "src/resources/presets.json;src/resources" ^
     --hidden-import "PySide6.QtXml" ^
-    src/main.py
+    run.py
 
 echo.
 if %errorlevel% equ 0 (
