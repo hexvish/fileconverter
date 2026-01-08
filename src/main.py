@@ -12,6 +12,8 @@ from src.ui.progresswindow import ProgressWindow
 from src.core.file_detector import FileDetector
 from src.core.preset_manager import PresetManager
 from src.ui.custom_dialog import CustomPresetDialog
+from src.core.media_info import MediaInfoExtractor
+from src.ui.mediainfo_window import MediaInfoWindow
 import src.cli as cli_module
 
 def main():
@@ -24,8 +26,19 @@ def main():
              cli_module.main()
              return
 
+             cli_module.main()
+             return
+
     app = QApplication(sys.argv)
     
+    # Handle Media Info arg
+    if len(sys.argv) > 1 and sys.argv[1] == "--media-info" and len(sys.argv) > 2:
+        file_path = sys.argv[2]
+        info = MediaInfoExtractor.get_info(file_path)
+        window = MediaInfoWindow(info)
+        window.exec()
+        sys.exit(0)
+
     if len(sys.argv) > 1 and sys.argv[1] == "--quick-convert":
         if len(sys.argv) < 3:
             print("Usage: main.py --quick-convert <preset_name> <file1> [file2 ...]")

@@ -127,6 +127,32 @@ eval "{base_cmd} --quick-convert \\"{preset_name}\\" $quoted_paths"
                 st = os.stat(script_path)
                 os.chmod(script_path, st.st_mode | stat.S_IEXEC)
                 
+        # --- Media Info Script (Common) ---
+        print("Adding Media Info script...")
+        # Using 00_ prefix to ensure valid sort order in strict file managers
+        mi_script_path = os.path.join(target_dir, "00_Media Info")
+        mi_content = f"""#!/bin/bash
+# Media Info Viewer
+
+SELECTED_FILE="$NAUTILUS_SCRIPT_SELECTED_FILE_PATHS"
+if [ -z "$SELECTED_FILE" ]; then
+    SELECTED_FILE="$NEMO_SCRIPT_SELECTED_FILE_PATHS"
+fi
+
+# Trim whitespace/newlines
+SELECTED_FILE=$(echo "$SELECTED_FILE" | head -n 1)
+
+if [ -z "$SELECTED_FILE" ]; then
+    exit 0
+fi
+
+eval "{base_cmd} --media-info \\"$SELECTED_FILE\\""
+"""
+        with open(mi_script_path, 'w') as f:
+            f.write(mi_content)
+        st = os.stat(mi_script_path)
+        os.chmod(mi_script_path, st.st_mode | stat.S_IEXEC)
+                
     print("Done! You may need to restart your file manager (nautilus -q or nemo -q).")
 
 if __name__ == "__main__":
