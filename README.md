@@ -18,6 +18,7 @@ It currently targets Linux, with Windows support planned.
 -   **System Integration**:
     -   **Right-Click Menu**: Seamless integration with Nautilus (GNOME) and Nemo (Linux Mint/Cinnamon).
     -   **Open With**: Open files directly into the FileConverter GUI.
+    -   **Open File Location**: Right-click on completed jobs to open the output folder.
 
 ## Requirements
 
@@ -33,7 +34,7 @@ It currently targets Linux, with Windows support planned.
 Download the latest `.deb` release and install it:
 
 ```bash
-sudo dpkg -i fileconverter_1.2.3_amd64.deb
+sudo dpkg -i fileconverter_1.2.4_amd64.deb
 ```
 *(Make sure to replace the version number with the file you downloaded)*
 
