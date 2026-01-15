@@ -1,8 +1,11 @@
+fileconverter (1.2.7) stable; urgency=medium
+
+  * Bump version to 1.2.7 as requested.
+
+ -- Vishnu <vishnu@example.com>  Wed, 15 Jan 2026 13:50:00 +0530
+
 fileconverter (1.2.5) stable; urgency=medium
 
-  * Initial public release
-  * Windows build support
-  * Linux .deb packaging
+  * Initial release for Linux.
 
- -- Vishnu S S <vishnutvm33@gmail.com>  Thu, 08 Jan 2026 15:30:00 +0530
-
+ -- Vishnu <vishnu@example.com>  Wed, 08 Jan 2025 21:00:00 +0530

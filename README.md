@@ -34,7 +34,7 @@ It currently targets Linux, with Windows support planned.
 Download the latest `.deb` release and install it:
 
 ```bash
-sudo dpkg -i fileconverter_1.2.4_amd64.deb
+sudo dpkg -i fileconverter_1.2.7_amd64.deb
 ```
 *(Make sure to replace the version number with the file you downloaded)*
 
