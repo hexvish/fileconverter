@@ -52,6 +52,7 @@ Since this is primarily a Linux tool, Windows support is currently in **Beta**. 
 2.  Run `build_windows.bat` (This installs Python deps and builds the `.exe`).
 3.  The executable will be in `dist\FileConverter\FileConverter.exe`.
 4.  **Context Menu**: Run `python src/scripts/register_windows.py` (as Admin) to add the "Convert with FileConverter" right-click option.
+5.  Currently windows is not working as expected.
 
 ### Method 3: From Source (Developers)
 
